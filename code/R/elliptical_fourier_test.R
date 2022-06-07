@@ -29,5 +29,12 @@ names(efList) <- names(ptsList) <- names(teeth_BW_train)
 
 
 
+#Make a data frame.  
+#Cut into folds.  
+#Perform random forest and SVM to evaluate the methods on both tribe and species.  
+#Evaluate accuracy 
+
+
+
 
 

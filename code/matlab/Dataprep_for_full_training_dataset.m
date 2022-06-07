@@ -12,7 +12,7 @@ referencefile20210622 = readtable("/Users/gregorymatthews/Dropbox/gladysvale/ref
 %500 rows are sample x and y coordinates. Each pair of rows (so 1:2,
 %3:4,...) are the x,y coords for an image. (3535 images total)
 
-%referencefile20210622 is a file with information about 3909 images. the
+%referencefile20210622 is a file with information about 3909 images. thew
 %columns are variable numbers and it contains the same image numbers used
 %in teethBWtrain...
 
@@ -120,6 +120,83 @@ for toothtype = ["LM1","LM2","LM3","UM1","UM2","UM3"]
         save(strcat("mean_",toothtype,"_",tribe),"mean")
     end
 end
+
+
+%Project on the means that have already been found
+for toothtype = ["LM1","LM2","LM3","UM1","UM2","UM3"]
+    teeth = teeth_data(:,:,teeth_ref.type == toothtype);
+    ref = teeth_ref(teeth_ref.type==toothtype,:);
+    cd /Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/means
+    load(strcat("mean_",toothtype,"_overall"))
+    
+    %FindTangentFeatures(mu,q,numPCs)
+    cd /Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/code/matlab
+    sz = size(teeth)
+
+    [VV,PC] = FindTangentFeatures(mean,teeth,min(sz(3) - 1,30))
+    %csvwrite(filename,M) writes matrix M to file filename as comma-separated values.
+    
+    cd /Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/fulldata/
+    writetable(ref, strcat(toothtype,"_train_reference.csv"))
+    csvwrite(strcat(toothtype,"_train_overall.csv"), VV)
+    csvwrite(strcat(toothtype,"_train_overall_PC.csv"), PC)
+
+    i = 0
+    out_all = repmat(0,[sz(3) 2*sz(2), 7])
+    out_pc = repmat(0,[sz(3) min(sz(3) - 1,30), 7])
+    for tribe = ["Alcelaphini","Antilopini","Bovini","Hippotragini","Neotragini","Reduncini","Tragelaphini"]
+        i = i + 1
+        disp(i)
+        teeth = teeth_data(:,:,teeth_ref.type == toothtype);
+        ref = teeth_ref(teeth_ref.type == toothtype ,:);
+
+        cd /Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/means
+        load(strcat("mean_",toothtype,"_",tribe))
+    
+        %FindTangentFeatures(mu,q,numPCs)
+        cd /Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/code/matlab
+        sz = size(teeth)
+
+        [VV,PC] = FindTangentFeatures(mean,teeth,min(sz(3) - 1,30))
+        
+        out_all(:,:,i) = VV
+        out_pc(:,:,i) = PC
+    end
+
+    %concatenate all of them
+    train_individual = horzcat(out_all(:,:,1), ...
+        out_all(:,:,2), ...
+        out_all(:,:,3), ...
+        out_all(:,:,4), ...
+        out_all(:,:,5), ...
+        out_all(:,:,6), ...
+        out_all(:,:,7))
+
+    cd /Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/fulldata 
+    csvwrite(strcat(toothtype,"_train_individual.csv"), train_individual)
+    
+
+    %Concatenate all of them
+    train_individual_PC = horzcat(out_all(:,:,1), ...
+        out_pc(:,:,2), ...
+        out_pc(:,:,3), ...
+        out_pc(:,:,4), ...
+        out_pc(:,:,5), ...
+        out_pc(:,:,6), ...
+        out_pc(:,:,7))
+
+    csvwrite(strcat(toothtype,"_train_individual_PC.csv"), train_individual_PC)
+
+end
+
+
+
+
+
+
+
+
+
 
 
 %%%Nikki code below here
