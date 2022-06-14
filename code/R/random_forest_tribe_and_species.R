@@ -5,7 +5,8 @@ results_rf_tribe <- list()
 results_rf_species <- list()
 #Projections: Individual, Overall, Individiual PC, Overall-PC
 
-for (proj in c("I","OV","I-PC","OV-PC")){print(proj)
+for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
+#for (proj in c("EFA")){print(proj)
   results_rf_tribe[[proj]] <- list()
   results_rf_species[[proj]] <- list()
   
@@ -14,11 +15,16 @@ for (proj in c("I","OV","I-PC","OV-PC")){print(proj)
   temp_list_species <- list()
   path <- "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/"
     for (i in 1:5){print(i)
+      
+      if (proj == "EFA"){
+        X_train <- read.csv(paste0(path,toothtype,"/",toothtype,"fold_EFAtrain",i,".csv"), header = TRUE)
+        X_test <- read.csv(paste0(path,toothtype,"/",toothtype,"fold_EFAtest",i,".csv"), header = TRUE)
+      }
     
     if (proj == "I"){
     X_train <- read.csv(paste0(path,toothtype,"/",toothtype,"fold_train",i,".csv"), header = FALSE)
     X_test <- read.csv(paste0(path,toothtype,"/",toothtype,"fold_test",i,".csv"), header = FALSE)
-    }
+    }  
     
     if (proj == "OV"){
     X_train <- read.csv(paste0(path,toothtype,"/",toothtype,"fold_train_overall",i,".csv"), header = FALSE)
@@ -76,7 +82,7 @@ save(results_rf_species,
 
 
 for (i in 1:6){
-  print(mean(results_rf[[i]][,1] == results_rf[[i]][,2]))
+  print(mean(results_rf_tribe[["I"]][[i]][,1] == results_rf_tribe[["I"]][[i]][,2]))
 }
 
 #Accuracy LM1: 0.8195876

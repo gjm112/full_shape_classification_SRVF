@@ -7,7 +7,7 @@ results_svm_radial_species <- list()
 results_svm_radial_species_given_tribe <- list()
 #Projections: Individual, Overall, Individiual PC, Overall-PC
 
-for (proj in c("I","OV","I-PC","OV-PC")){print(proj)
+for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
   results_svm_radial_tribe[[proj]] <- list()
   results_svm_radial_species[[proj]] <- list()
   temp_list_species_given_tribe <- list()
@@ -17,6 +17,12 @@ for (proj in c("I","OV","I-PC","OV-PC")){print(proj)
     temp_list_species <- list()
     path <- "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/"
     for (i in 1:5){print(i)
+      
+      if (proj == "EFA"){
+        X_train <- read.csv(paste0(path,toothtype,"/",toothtype,"fold_EFAtrain",i,".csv"), header = TRUE)[,-1]
+        X_test <- read.csv(paste0(path,toothtype,"/",toothtype,"fold_EFAtest",i,".csv"), header = TRUE)[,-1]
+      }
+      
       
       if (proj == "I"){
         X_train <- read.csv(paste0(path,toothtype,"/",toothtype,"fold_train",i,".csv"), header = FALSE)

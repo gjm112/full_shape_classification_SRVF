@@ -30,27 +30,58 @@ names(efList) <- names(ptsList) <- names(teeth_BW_train)
 all <- do.call(rbind,ptsList)
 row.names(all) <- names(ptsList)
 
-#Now pull out LM1 
-temp <- all[row.names(all) %in% rs$image[rs$type == "LM1"],]
-
-#Now add PCs
-#Add principle components
-pc<-princomp(temp)$scores
-temp<-cbind(temp,pc[,1:30])
-
 #Now cut it in to folds like Nikki did.
-#Create the folds to match what nikki did.  Then I can just run it through the same code that I alreayd have. 
-folds_ref <-  read.csv("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/folds/LM1ref_folds.csv")
-
-#Test
-temp[folds_ref$image[folds_ref$folds_tribe == 1],]
-
-#Train
-temp[folds_ref$image[folds_ref$folds_tribe != 1],]
-
-
-
-
+#Create the folds to match what nikki did.  Then I can just run it through the same code that I alreayd have.
+for (tooth in c("LM1", "LM2", "LM3", "UM1", "UM2", "UM3")) {print(tooth)
+  #Now pull out LM1 
+  temp <- all[row.names(all) %in% rs$image[rs$type == tooth],]
+  
+  #Now add PCs
+  #Add principle components
+  pc<-princomp(temp)$scores
+  temp<-cbind(temp,pc[,1:30])
+  
+  folds_ref <-
+    read.csv(
+      paste0(
+        "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/folds/",
+        tooth,
+        "ref_folds.csv"
+      )
+    )
+  
+  for (fold in 1:5) {print(fold)
+    #Test
+    write.csv(
+      temp[folds_ref$image[folds_ref$folds_tribe == fold], ],
+      file = paste0(
+        "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/",
+        tooth,
+        "/",
+        tooth,
+        "fold_EFAtest",
+        fold,
+        ".csv"
+      )
+    )
+    
+    #Train
+    write.csv(
+      temp[folds_ref$image[folds_ref$folds_tribe != fold], ],
+      file = paste0(
+        "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/",
+        tooth,
+        "/",
+        tooth,
+        "fold_EFAtrain",
+        fold,
+        ".csv"
+      )
+    )
+    
+    
+  }
+}
 
 
 
