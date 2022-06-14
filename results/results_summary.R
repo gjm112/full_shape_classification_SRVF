@@ -7,7 +7,7 @@ load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/resu
 #names(results_rf_species_given_tribe[["I"]][["LM1"]])
 
 res <- data.frame()
-for (proj in c("I", "OV", "I-PC", "OV-PC")) {print(proj)
+for (proj in c("I", "OV", "I-PC", "OV-PC","EFA")) {print(proj)
   for (tooth in c("LM1", "LM2", "LM3", "UM1", "UM2", "UM3")) {
     #Random Forest
     mat <- results_rf_species_given_tribe[[proj]][[tooth]]
@@ -40,7 +40,7 @@ for (proj in c("I", "OV", "I-PC", "OV-PC")) {print(proj)
 }
 
 
-res$proj <- factor(res$proj, levels = c("I","OV","I-PC","OV-PC"))
+res$proj <- factor(res$proj, levels = c("EFA","I","OV","I-PC","OV-PC"))
 
 library(ggplot2)
 ggplot(aes(x = proj, y = accuracy, colour = method, group = method), data = res) + geom_point(aes(group = method)) + facet_grid(toothnum~toothchar) + 
@@ -59,7 +59,7 @@ load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/resu
 load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_xg_species.rda")
 
 res <- data.frame()
-for (proj in c("I", "OV", "I-PC", "OV-PC")) {print(proj)
+for (proj in c("I", "OV", "I-PC", "OV-PC","EFA")) {print(proj)
   for (tooth in c("LM1", "LM2", "LM3", "UM1", "UM2", "UM3")) {
     #Random Forest
     mat <- results_rf_species[[proj]][[tooth]]
@@ -91,7 +91,7 @@ for (proj in c("I", "OV", "I-PC", "OV-PC")) {print(proj)
 }
 
 
-res$proj <- factor(res$proj, levels = c("I","OV","I-PC","OV-PC"))
+res$proj <- factor(res$proj, levels = c("EFA","I","OV","I-PC","OV-PC"))
 res$model <- factor(res$model)
 
 library(ggplot2)
@@ -117,7 +117,7 @@ load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/resu
 load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_xg_tribe.rda")
 
 res <- data.frame()
-for (proj in c("I", "OV", "I-PC", "OV-PC")) {print(proj)
+for (proj in c("I", "OV", "I-PC", "OV-PC","EFA")) {print(proj)
   for (tooth in c("LM1", "LM2", "LM3", "UM1", "UM2", "UM3")) {
     #Random Forest
     mat <- results_rf_tribe[[proj]][[tooth]]
@@ -149,7 +149,7 @@ for (proj in c("I", "OV", "I-PC", "OV-PC")) {print(proj)
 }
 
 
-res$proj <- factor(res$proj, levels = c("I","OV","I-PC","OV-PC"))
+res$proj <- factor(res$proj, levels = c("EFA","I","OV","I-PC","OV-PC"))
 res$model <- factor(res$model)
 
 library(ggplot2)
