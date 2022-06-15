@@ -29,6 +29,11 @@ end
 % get image ids in order 
 teeth_ref_gladysvale = teethBWgladysvale500matrix.image(1:2:n_rows);
 
+cd /Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/fulldata
+ % Write the table to a CSV file
+writetable(cell2table(teeth_ref_gladysvale),strcat("gladysvale_reference.csv"))
+    
+
 %% sort so that the images in teeth_data are in the same order as the variables in teeth_ref
 teeth_data_gladysvale = teeth_data
 
