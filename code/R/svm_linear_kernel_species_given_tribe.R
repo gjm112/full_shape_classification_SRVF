@@ -6,6 +6,8 @@ results_svm_linear_species <- list()
 results_svm_linear_species_given_tribe <- list()
 #Projections: Individual, Overall, Individiual PC, Overall-PC
 
+size <- TRUE
+
 for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
   results_svm_linear_tribe[[proj]] <- list()
   results_svm_linear_species[[proj]] <- list()
@@ -51,6 +53,12 @@ for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
       
       y_train$species <- (as.factor(y_train$species))
       y_test$species <- (as.factor(y_test$species))
+      
+      if (size){
+        fold_ref_with_size <- read.csv(paste0("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/folds/",toothtype,"ref_folds_with_size.csv"))
+        X_train$size <- fold_ref_with_size$size[fold_ref_with_size$folds_tribe != i]
+        X_test$size <- fold_ref_with_size$size[fold_ref_with_size$folds_tribe == i]
+      }
       
       
       #best <- tune(randomForest, train.y = y_train, train.x = X_train, ranges = list(mtry = c(3, 5), tunecontrol = tune.control(cross = 3)))
@@ -104,6 +112,7 @@ for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
 
 #Output is a list with 6 slots (one for each tooth type).
 #In each slot there is the pred class, real class, and then probs for each tribe.
+if (!size){
 save(results_svm_linear_tribe, 
      file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_tribe.rda")
 
@@ -112,6 +121,18 @@ save(results_svm_linear_species,
 
 save(results_svm_linear_species_given_tribe, 
      file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_species_given_tribe.rda")
+}
+
+if (size){
+  save(results_svm_linear_tribe, 
+       file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_tribe_with_size.rda")
+  
+  save(results_svm_linear_species, 
+       file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_species_with_size.rda")
+  
+  save(results_svm_linear_species_given_tribe, 
+       file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_species_given_tribe_with_size.rda")
+}
 
 
 for (i in 1:6){
