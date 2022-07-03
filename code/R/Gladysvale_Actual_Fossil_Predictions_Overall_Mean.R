@@ -5,7 +5,12 @@ library(e1071)
 #Predict the gladysvale fossil teeth using overall means  
 
 setwd("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF")
-
+gladysvale_metadata <- read.csv("./data/Gladysvale_Med_Alcels_Greg.csv", header = FALSE)[,1:3]
+names(gladysvale_metadata) <- c("image","type","broken")
+gladysvale_metadata$I_broken <- 0
+gladysvale_metadata$I_broken[gladysvale_metadata$broken == "broken"] <- 1
+gladysvale_metadata <- gladysvale_metadata[gladysvale_metadata$broken != "broken",]
+table(gladysvale_metadata$type)
 
 for (toothtype in c("LM1","LM2","LM3","UM1","UM2","UM3")){
   #Read in the training data set. 
@@ -29,7 +34,7 @@ for (toothtype in c("LM1","LM2","LM3","UM1","UM2","UM3")){
   #Predict Tribe Gladysvale
   pred_tribe_gladysvale <- data.frame(ID = gladysvale_reference, 
                                       type = toothtype,
-                                      pred_class = predict(a, X_test), real_class =NA, attr(predict(a, X_test, probability = TRUE), "probabilities"))
+                                      pred_class = predict(a, X_test), real_class = NA, attr(predict(a, X_test, probability = TRUE), "probabilities"))
   
   
   #Now train models to predict species conditional on tribe
@@ -59,7 +64,13 @@ for (toothtype in c("LM1","LM2","LM3","UM1","UM2","UM3")){
                                         real_class = NA, 
                                         temp)
   
+  #Now pull out only the correct tooth type
+  ids <- gladysvale_metadata$image[gladysvale_metadata$type == toothtype]
   
+  pred_tribe_gladysvale <- subset(pred_tribe_gladysvale,  teeth_ref_gladysvale %in% ids)
+  pred_species_gladysvale <- subset(pred_species_gladysvale,  teeth_ref_gladysvale %in% ids)
+  
+
   write.csv(pred_tribe_gladysvale, paste0("./gladysvale_predictions/",toothtype,"_tribe_overall.csv"))
   write.csv(pred_species_gladysvale, paste0("./gladysvale_predictions/",toothtype,"_species_overall.csv"))
   
