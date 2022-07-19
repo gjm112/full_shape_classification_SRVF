@@ -73,5 +73,5 @@ end
 %this plots the mean curve 
 figure('Name', 'Mean'); clf; 
 mean_p = q_to_curve(mu);
-plot(mean_p(1,:),mean_p(2,:),'LineWidth',3);
+plot(mean_p(1,:),mean_p(2,:),'LineWidth',2);
 axis equal;

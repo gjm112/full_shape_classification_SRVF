@@ -68,39 +68,40 @@ for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
       nrounds <- 500
       grid_default <- expand.grid(
         nrounds = seq(from = 50, to = nrounds, by = 50),
-        eta = 0.3,
-        max_depth = c(2,4,6),
-        gamma = 5,
+        eta = c(0,0.15,0.3,0.45),
+        max_depth = c(2),
+        gamma = c(0,0.15,0.3,0.45),
         colsample_bytree = 1,
         min_child_weight = 1,
         subsample = 1
       )
-      
+
       train_control <- caret::trainControl(
         method = "cv", # cross-validation
         number = 3,
         verboseIter = TRUE, # no training log
-        allowParallel = TRUE # FALSE for reproducible results 
+        allowParallel = TRUE # FALSE for reproducible results
       )
-      
+
       xgb_base <- caret::train(
         x = X_train,
-        y = as.numeric(as.factor(y_train$tribe)) - 1,
+        y = as.factor(as.numeric(as.factor(y_train$tribe)) - 1),
         trControl = train_control,
         tuneGrid = grid_default,
         method = "xgbTree",
-        verbose = TRUE
+        verbose = TRUE, 
+        metric = "Accuracy", 
+        maximize = TRUE
       )
       
-      xgb_base$bestTune
       
       
       
-      a <- xgboost(data = X_train, label = as.numeric(as.factor(y_train$tribe)) - 1,
+     a <- xgboost(data = X_train, label = (as.numeric(as.factor(y_train$tribe)) - 1),
                    max_depth = xgb_base$bestTune$max_depth, 
-                   eta = 0.3, 
+                   eta = xgb_base$bestTune$eta, 
                    nthread = 2, 
-                   gamma = 5,
+                   gamma = xgb_base$bestTune$gamma,
                    nrounds = xgb_base$bestTune$nrounds,
                    num_class = 7,
                    objective = "multi:softprob", 
@@ -121,9 +122,9 @@ for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
       nrounds <- 500
       grid_default <- expand.grid(
         nrounds = seq(from = 50, to = nrounds, by = 50),
-        eta = 0.3,
-        max_depth = c(2,4,6),
-        gamma = 5,
+        eta = c(0,0.15,0.3,0.45),
+        max_depth = c(2),
+        gamma = c(0,0.15,0.3,0.45),
         colsample_bytree = 1,
         min_child_weight = 1,
         subsample = 1
@@ -138,21 +139,23 @@ for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
       
       xgb_base <- caret::train(
         x = X_train,
-        y = as.numeric(as.factor(y_train$species)) - 1,
+        y = as.factor(as.numeric(as.factor(y_train$species)) - 1),
         trControl = train_control,
         tuneGrid = grid_default,
         method = "xgbTree",
-        verbose = TRUE
+        verbose = TRUE,
+        metric = "Accuracy", 
+        maximize = TRUE
       )
       
       print("b")
       print(xgb_base$bestTune)
       
-      b <- xgboost(data = X_train, label = as.numeric(as.factor(y_train$species)) - 1,
+      b <- xgboost(data = X_train, label = (as.numeric(as.factor(y_train$species)) - 1),
                    max_depth = xgb_base$bestTune$max_depth, 
-                   eta = 0.3, 
-                   nthread = 2,
-                   gamma = 5, 
+                   eta = xgb_base$bestTune$eta, 
+                   nthread = 2, 
+                   gamma = xgb_base$bestTune$gamma,
                    nrounds = xgb_base$bestTune$nrounds,
                    num_class = 20,
                    objective = "multi:softprob", 
@@ -171,9 +174,9 @@ for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
           nrounds <- 500
           grid_default <- expand.grid(
             nrounds = seq(from = 50, to = nrounds, by = 50),
-            eta = 0.3,
-            max_depth = c(2,4,6),
-            gamma = 5,
+            eta = c(0,0.15,0.3,0.45),
+            max_depth = c(2),
+            gamma = c(0,0.15,0.3,0.45),
             colsample_bytree = 1,
             min_child_weight = 1,
             subsample = 1
@@ -188,21 +191,23 @@ for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
           
           xgb_base <- caret::train(
             x = X_train[y_train$tribe == tr,],
-            y = (as.numeric(as.factor(as.character(y_train$species[y_train$tribe == tr])))) - 1,
+            y = as.factor((as.numeric(as.factor(as.character(y_train$species[y_train$tribe == tr])))) - 1),
             trControl = train_control,
             tuneGrid = grid_default,
             method = "xgbTree",
-            verbose = TRUE
+            verbose = TRUE,
+            metric = "Accuracy", 
+            maximize = TRUE
           )
           
           print("c")
           print(xgb_base$bestTune)
           
-          c <- xgboost(data = X_train[y_train$tribe == tr,], label = (as.numeric(as.factor(as.character(y_train$species[y_train$tribe == tr])))) - 1,
+          c <- xgboost(data = X_train[y_train$tribe == tr,], label = ((as.numeric(as.factor(as.character(y_train$species[y_train$tribe == tr])))) - 1),
                        max_depth = xgb_base$bestTune$max_depth, 
-                       eta = 1, 
+                       eta = xgb_base$bestTune$eta, 
                        nthread = 2, 
-                       gamma = 5, 
+                       gamma = xgb_base$bestTune$gamma,
                        nrounds = xgb_base$bestTune$nrounds,
                        num_class = num_class,
                        objective = "multi:softprob", 
@@ -235,6 +240,17 @@ for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
     results_xg_tribe[[proj]][[toothtype]] <-  do.call(rbind,temp_list_tribe)
     results_xg_species[[proj]][[toothtype]] <-  do.call(rbind,temp_list_species)
     results_xg_species_given_tribe[[proj]][[toothtype]] <-  do.call(rbind,temp_list_species_given_tribe)
+    
+    #Output is a list with 6 slots (one for each tooth type).
+    #In each slot there is the pred class, real class, and then probs for each tribe.
+    save(results_xg_tribe, 
+         file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_xg_tribe.rda")
+    
+    save(results_xg_species, 
+         file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_xg_species.rda")
+    
+    save(results_xg_species_given_tribe, 
+         file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_xg_species_given_tribe.rda")
     
   }
   

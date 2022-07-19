@@ -7,7 +7,7 @@ results_svm_radial_species <- list()
 results_svm_radial_species_given_tribe <- list()
 #Projections: Individual, Overall, Individiual PC, Overall-PC
 
-size <- TRUE
+size <- FALSE
 
 for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
   results_svm_radial_tribe[[proj]] <- list()
@@ -67,19 +67,21 @@ for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
       ###################################
       #Tribe classification
       ###################################
-      best <- tune(svm, train.y = y_train$tribe, train.x = X_train ,kernel ="radial", ranges = list(cost=c(0.001,0.01,0.1,0.5,1,2.5,5,10,100)), tunecontrol = tune.control(cross = 3))
+      best <- tune(svm, train.y = y_train$tribe, train.x = X_train ,kernel ="radial", ranges = list(cost=c(0.1,0.5,1,2.5,5,10,100,1000), gamma=c(0.001,0.01,0.1,0.5,1,2.5,5,10,100,1000)), tunecontrol = tune.control(cross = 3))
       a <- svm(y = y_train$tribe, x = X_train, type = "C-classification", kernel = "radial", cost =  best$best.parameters, probability = TRUE)
-      temp_list_tribe[[i]] <- data.frame(pred_class = predict(a, X_test), real_class = y_test$tribe, attr(predict(a, X_test, probability = TRUE), "probabilities"))
+      temp_list_tribe[[i]] <- data.frame(pred_class = colnames(attr(predict(a, X_test, probability = TRUE), "probabilities"))[apply(attr(predict(a, X_test, probability = TRUE), "probabilities"),1,which.max)]
+                                           , real_class = y_test$tribe, attr(predict(a, X_test, probability = TRUE), "probabilities"))
+      #predict(a, X_test)  I'm not using this anymore because I want the predictions to line up with the probabilities.  
       
-      best <- tune(svm, train.y = y_train$species, train.x = X_train ,kernel ="radial", ranges = list(cost=c(0.001,0.01,0.1,0.5,1,2.5,5,10,100)), tunecontrol = tune.control(cross = 3))
+      best <- tune(svm, train.y = y_train$species, train.x = X_train ,kernel ="radial", ranges = list(cost=c(0.1,0.5,1,2.5,5,10,100,1000), gamma=c(0.001,0.01,0.1,0.5,1,2.5,5,10,100,1000)), tunecontrol = tune.control(cross = 3))
       b <- svm(y = y_train$species, x = X_train, type = "C-classification", kernel = "radial", cost =  best$best.parameters, probability = TRUE)
-      temp_list_species[[i]] <- data.frame(pred_class = predict(b, X_test), real_class = y_test$species, attr(predict(b, X_test, probability = TRUE), "probabilities"))
+      temp_list_species[[i]] <- data.frame(pred_class = colnames(attr(predict(b, X_test, probability = TRUE), "probabilities"))[apply(attr(predict(b, X_test, probability = TRUE), "probabilities"),1,which.max)], real_class = y_test$species, attr(predict(b, X_test, probability = TRUE), "probabilities"))
       
       #Loop through tribes
       temp_list_species_given_tribe_c <- list()
       for (tr in c("Alcelaphini","Antilopini","Bovini","Hippotragini","Neotragini","Reduncini","Tragelaphini")){print(tr)
         if (!tr %in% c("Antilopini","Bovini")){
-          best <- tune(svm, train.y = y_train$species[y_train$tribe == tr], train.x = X_train[y_train$tribe == tr,] ,kernel ="radial", ranges = list(cost=c(0.001,0.01,0.1,0.5,1,2.5,5,10,100)), tunecontrol = tune.control(cross = 3))
+          best <- tune(svm, train.y = y_train$species[y_train$tribe == tr], train.x = X_train[y_train$tribe == tr,] ,kernel ="radial", ranges = list(cost=c(0.1,0.5,1,2.5,5,10,100,1000), gamma=c(0.001,0.01,0.1,0.5,1,2.5,5,10,100,1000)), tunecontrol = tune.control(cross = 3))
           c <- svm(y = y_train$species[y_train$tribe == tr], x = X_train[y_train$tribe == tr,], type = "C-classification", kernel = "radial", cost =  best$best.parameters, probability = TRUE)
           temp_list_species_given_tribe_c[[tr]] <- data.frame(apply(attr(predict(c, X_test, probability = TRUE), "probabilities"),2,function(x){x*temp_list_tribe[[i]][,tr]}))
           

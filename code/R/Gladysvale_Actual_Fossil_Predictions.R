@@ -33,7 +33,7 @@ a <- svm(y = factor(y_train$tribe), x = X_train, type = "C-classification", kern
 #Predict Tribe Gladysvale
 pred_tribe_gladysvale <- data.frame(ID = gladysvale_reference, 
                                     type = toothtype,
-                                    pred_class = predict(a, X_test), real_class =NA, attr(predict(a, X_test, probability = TRUE), "probabilities"))
+                                    pred_class = colnames(attr(predict(a, X_test, probability = TRUE), "probabilities"))[apply(attr(predict(a, X_test, probability = TRUE), "probabilities"),1,which.max)], real_class =NA, attr(predict(a, X_test, probability = TRUE), "probabilities"))
 
 
 #Now train models to predict species conditional on tribe
