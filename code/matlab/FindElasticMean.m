@@ -24,7 +24,7 @@ cutoff = 0.005;
 mu = sum(q,3)/n;
 %normalize the mean of the q's (to deal with scale)
 %this is our initial guess (i think)
-mu=mu/sqrt(InnerProd_Q(mu,mu));
+%mu=mu/sqrt(InnerProd_Q(mu,mu));
 %I think this projects onto the tangent space?
 mu=ProjectC(mu);
 

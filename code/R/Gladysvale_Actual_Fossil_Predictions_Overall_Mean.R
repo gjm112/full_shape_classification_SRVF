@@ -34,7 +34,7 @@ for (toothtype in c("LM1","LM2","LM3","UM1","UM2","UM3")){
   #Predict Tribe Gladysvale
   pred_tribe_gladysvale <- data.frame(ID = gladysvale_reference, 
                                       type = toothtype,
-                                      pred_class = predict(a, X_test), real_class = NA, attr(predict(a, X_test, probability = TRUE), "probabilities"))
+                                      pred_class = colnames(attr(predict(a, X_test, probability = TRUE), "probabilities"))[apply(attr(predict(a, X_test, probability = TRUE), "probabilities"),1,which.max)], real_class =NA, attr(predict(a, X_test, probability = TRUE), "probabilities"))
   
   
   #Now train models to predict species conditional on tribe
@@ -76,4 +76,26 @@ for (toothtype in c("LM1","LM2","LM3","UM1","UM2","UM3")){
   
   
 }
+
+res <- list()
+for (toothtype in c("LM1","LM2","LM3","UM1","UM2","UM3")){
+  res[[toothtype]] <- read.csv(paste0("./gladysvale_predictions/",toothtype,"_tribe_overall.csv"))
+}
+
+res_df <- do.call(rbind,res)
+table(res_df$type,res_df$pred_class)
+table(res_df$pred_class == "Alcelaphini")
+
+mean(res_df$Alcelaphini[res_df$pred_class == "Alcelaphini"])
+
+
+
+res <- list()
+for (toothtype in c("LM1","LM2","LM3","UM1","UM2","UM3")){
+  res[[toothtype]] <- read.csv(paste0("./gladysvale_predictions/",toothtype,"_tribe_overall.csv"))
+}
+
+res_df <- do.call(rbind,res)
+table(res_df$type,res_df$pred_class)
+
 

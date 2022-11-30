@@ -19,7 +19,7 @@ for i=1:n
     VV(i,1:b) = tmp(1,:);
     VV(i,b+1:2*b) = tmp(2,:);
 end
-
+ 
 %covariance of VV
 K = cov(VV);
 %singluar value decomp of VV 
