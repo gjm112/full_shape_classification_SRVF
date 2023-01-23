@@ -21,7 +21,13 @@ y_train$species <- as.factor(y_train$species)
 
 #Read in the test data set. 
 X_test <- read.csv(paste0("./data/fulldata/",toothtype,"_gladysvale_individual.csv"), header = FALSE)
+#This file has the reference numbers for the teeth in X_test
 gladysvale_reference <- read.csv("./data/fulldata/gladysvale_reference.csv")
+
+#remove the broken teeth
+keep <- gladysvale_reference$teeth_ref_gladysvale %in% gladysvale_metadata$image
+X_test <- X_test[keep,]
+gladysvale_reference <- gladysvale_reference[keep,]
 
 #rs in the full reference file.  Merge on the info that we want.  
 rs <- read.csv("/Users/gregorymatthews/Dropbox/gladysvale/reference_file_20210622.csv")
@@ -66,8 +72,8 @@ pred_species_gladysvale <- data.frame(ID = gladysvale_reference, type = toothtyp
 #Now pull out only the correct tooth type
 ids <- gladysvale_metadata$image[gladysvale_metadata$type == toothtype]
 
-pred_tribe_gladysvale <- subset(pred_tribe_gladysvale,  teeth_ref_gladysvale %in% ids)
-pred_species_gladysvale <- subset(pred_species_gladysvale,  teeth_ref_gladysvale %in% ids)
+pred_tribe_gladysvale <- subset(pred_tribe_gladysvale,  ID %in% ids)
+pred_species_gladysvale <- subset(pred_species_gladysvale,  ID %in% ids)
 
 
 write.csv(pred_tribe_gladysvale, paste0("./gladysvale_predictions/",toothtype,"_tribe_individual.csv"))

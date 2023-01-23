@@ -37,6 +37,6 @@ teeth_data_gladysvale = teeth_data
 
 % save the teeth_data and teeth_ref in one .dat file
 cd /Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/gladysvale
-save('teeth_data_galdysvale')
+save('teeth_data_gladysvale')
 save('teeth_ref_gladysvale')
 
