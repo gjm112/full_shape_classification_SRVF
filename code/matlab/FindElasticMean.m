@@ -24,7 +24,7 @@ cutoff = 0.005;
 mu = sum(q,3)/n;
 %normalize the mean of the q's (to deal with scale)
 %this is our initial guess (i think)
-%mu=mu/sqrt(InnerProd_Q(mu,mu));
+mu=mu/sqrt(InnerProd_Q(mu,mu));
 %I think this projects onto the tangent space?
 mu=ProjectC(mu);
 
@@ -48,8 +48,8 @@ while (iter < Niter && E(iter-1) > cutoff)
        %this is the Forbenious norm of the sum of the v's 
        %this is the discrepency between the point we want to reach and the
        %point we want to shoot to
-       E(iter) = (InnerProd_Q(vm,vm))
-       %E(iter) = norm(vm,'fro');
+       %E(iter) = (InnerProd_Q(vm,vm))
+       E(iter) = norm(vm,'fro');
        %this uses the elastic shoot method to find a mean shape 
        %for this iteration 
        mu = ElasticShooting(mu,del*vm);

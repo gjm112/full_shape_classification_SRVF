@@ -58,7 +58,11 @@ for toothtype = ["LM1","LM2","LM3","UM1","UM2","UM3"]
     cd /Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/code/matlab
     sz = size(teeth)
 
-    [VV,PC] = FindTangentFeatures(mean,teeth,min(sz(3) - 1,30))
+    q = teeth
+    for j=1:sz(3)
+    q(:,:,j) = curve_to_q(teeth(:,:,j));
+    end
+    [VV,PC] = FindTangentFeatures(mean,q,min(sz(3) - 1,30))
     %csvwrite(filename,M) writes matrix M to file filename as comma-separated values.
     
     cd /Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/fulldata/
@@ -81,8 +85,11 @@ for toothtype = ["LM1","LM2","LM3","UM1","UM2","UM3"]
         %FindTangentFeatures(mu,q,numPCs)
         cd /Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/code/matlab
         sz = size(teeth)
-
-        [VV,PC] = FindTangentFeatures(mean,teeth,min(sz(3) - 1,30))
+            q = teeth
+             for j=1:sz(3)
+             q(:,:,j) = curve_to_q(teeth(:,:,j));
+                end
+        [VV,PC] = FindTangentFeatures(mean,q,min(sz(3) - 1,30))
         
         out_all(:,:,i) = VV
         %out_pc(:,:,i) = PC
