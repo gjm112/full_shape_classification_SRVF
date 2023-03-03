@@ -11,11 +11,22 @@ res_df$tooth_loc_num <- substring(res_df$type,3,3)
 library(xtable)
 xtable(table(res_df$tooth_loc_num,res_df$tooth_loc))
 
+
+names(res_df)[order(-res_df[1,6:12])+5][1:2]
+#How often Alcelaphini the top 2 classes?
+checkit <- function(x){
+"Alcelaphini" %in% names(res_df)[order(-x)+5][1:2 ] 
+}
+mean(apply(res_df[,6:12],1,checkit))
+
+checkit(res_df[1,6:12])
+
+
 library(ggplot2)
 ggplot(aes(x = type, y = Alcelaphini), data = res_df) + geom_boxplot()
 
 
-table(res_df$type,res_df$pred_class)
+xtable(table(res_df$type,res_df$pred_class))
 table(res_df$pred_class == "Alcelaphini")
 mean(res_df$pred_class == "Alcelaphini")
 
@@ -36,7 +47,7 @@ xtable(table(res_df$tooth_loc_num,res_df$tooth_loc))
 library(ggplot2)
 ggplot(aes(x = type, y = Alcelaphini), data = res_df) + geom_boxplot()
 
-
+xtable(table(res_df$type,res_df$pred_class))
 table(res_df$type,res_df$pred_class)
 table(res_df$pred_class == "Alcelaphini")
 mean(res_df$pred_class == "Alcelaphini")
@@ -60,3 +71,4 @@ sum(res_df$pred_class == "gnou")
 sum(res_df$pred_class == "buselaphus")
 sum(res_df$pred_class == "dorcas")
 mean(res_df$pred_class == "taurinus")
+
