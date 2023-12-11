@@ -55,7 +55,7 @@ mean(res_df$pred_class == "Alcelaphini")
 
 
 #Tribe and species structure
-tribe_and_species <- read.csv("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/UpdatedCatsFiles/LM1/LM1fold_test_cats1.csv")
+tribe_and_species <- read.csv("./full_shape_classification_SRVF/data/UpdatedCatsFiles/LM1/LM1fold_test_cats1.csv")
 tribe_and_species <- tribe_and_species[!duplicated(paste0(tribe_and_species$tribe, tribe_and_species$species)),]
 #Individual results species
 res <- list()
@@ -76,7 +76,7 @@ xtable(table(res_df$type,paste0(res_df$tribe,res_df$pred_class)))
 
 
 #Overeall results 
-tribe_and_species <- read.csv("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/UpdatedCatsFiles/LM1/LM1fold_test_cats1.csv")
+tribe_and_species <- read.csv("./full_shape_classification_SRVF/data/UpdatedCatsFiles/LM1/LM1fold_test_cats1.csv")
 tribe_and_species <- tribe_and_species[!duplicated(paste0(tribe_and_species$tribe, tribe_and_species$species)),]
 #Individual results species
 res <- list()
