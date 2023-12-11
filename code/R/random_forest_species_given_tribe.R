@@ -8,7 +8,7 @@ results_rf_species_given_tribe <- list()
 #Projections: Individual, Overall, Individiual PC, Overall-PC
 
 #Do we want to consider size? 
-size <- TRUE
+size <- FALSE
 
 
 for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
