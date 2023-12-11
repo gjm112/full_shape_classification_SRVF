@@ -16,7 +16,7 @@ for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
   for (toothtype in c("LM1","LM2","LM3","UM1","UM2","UM3")){print(toothtype)
     temp_list_tribe <- list()
     temp_list_species <- list()
-    path <- "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/"
+    path <- "./full_shape_classification_SRVF/data/"
     for (i in 1:5){print(i)
       
       if (proj == "EFA"){
@@ -55,7 +55,7 @@ for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
       y_test$species <- (as.factor(y_test$species))
       
       if (size){
-        fold_ref_with_size <- read.csv(paste0("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/data/folds/",toothtype,"ref_folds_with_size.csv"))
+        fold_ref_with_size <- read.csv(paste0("./full_shape_classification_SRVF/data/folds/",toothtype,"ref_folds_with_size.csv"))
         X_train$size <- fold_ref_with_size$size[fold_ref_with_size$folds_tribe != i]
         X_test$size <- fold_ref_with_size$size[fold_ref_with_size$folds_tribe == i]
       }
@@ -114,24 +114,24 @@ for (proj in c("I","OV","I-PC","OV-PC","EFA")){print(proj)
 #In each slot there is the pred class, real class, and then probs for each tribe.
 if (!size){
 save(results_svm_linear_tribe, 
-     file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_tribe.rda")
+     file = "./full_shape_classification_SRVF/results/results_svm_linear_tribe.rda")
 
 save(results_svm_linear_species, 
-     file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_species.rda")
+     file = "./full_shape_classification_SRVF/results/results_svm_linear_species.rda")
 
 save(results_svm_linear_species_given_tribe, 
-     file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_species_given_tribe.rda")
+     file = "./full_shape_classification_SRVF/results/results_svm_linear_species_given_tribe.rda")
 }
 
 if (size){
   save(results_svm_linear_tribe, 
-       file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_tribe_with_size.rda")
+       file = "./full_shape_classification_SRVF/results/results_svm_linear_tribe_with_size.rda")
   
   save(results_svm_linear_species, 
-       file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_species_with_size.rda")
+       file = "./full_shape_classification_SRVF/results/results_svm_linear_species_with_size.rda")
   
   save(results_svm_linear_species_given_tribe, 
-       file = "/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_species_given_tribe_with_size.rda")
+       file = "./full_shape_classification_SRVF/results/results_svm_linear_species_given_tribe_with_size.rda")
 }
 
 

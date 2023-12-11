@@ -1,13 +1,8 @@
-#load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_rf_species_given_tribe_with_size.rda")
-#load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_radial_species_given_tribe_with_size.rda")
-#load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_species_given_tribe_with_size.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_rf_species_given_tribe.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_radial_species_given_tribe.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_species_given_tribe.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_xg_species_given_tribe.rda")
+library(tidyverse)
+load("./full_shape_classification_SRVF/results/results_rf_species_given_tribe.rda")
+load("./full_shape_classification_SRVF/results/results_svm_radial_species_given_tribe.rda")
+load("./full_shape_classification_SRVF/results/results_svm_linear_species_given_tribe.rda")
 
-
-#names(results_rf_species_given_tribe[["I"]][["LM1"]])
 
 res <- data.frame()
 for (proj in c("I", "OV", "I-PC", "OV-PC","EFA")) {print(proj)
@@ -38,22 +33,15 @@ for (proj in c("I", "OV", "I-PC", "OV-PC","EFA")) {print(proj)
     res <- rbind(res,data.frame(method = "SVM-R", proj = proj, tooth = tooth, accuracy = acc, logloss = logloss, toothchar = substring(tooth,1,2), toothnum = substring(tooth,3,3), model = "species_given_tribe"))
     
     
-    #XGboost
-    mat <- results_xg_species_given_tribe[[proj]][[tooth]]
-    #Accuracy
-    acc <- mean(mat$pred_class == mat$real_class)
-    #log loss
-    logloss <- mean(-apply(mat, 1, function(x){log(as.numeric(x[x[["real_class"]]]))}))
-    res <- rbind(res,data.frame(method = "XG", proj = proj, tooth = tooth, accuracy = acc, logloss = logloss, toothchar = substring(tooth,1,2), toothnum = substring(tooth,3,3), model = "species_given_tribe"))
-    
     
   }
 }
 
 
 res$proj <- factor(res$proj, levels = c("EFA","I","OV","I-PC","OV-PC"))
+res <- res %>% filter(method != "XG")
 
-png("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/figures/species_given_tribe_accuracy.png", res = 300, units = "in", h = 5, w = 8)
+png("./full_shape_classification_SRVF/figures/species_given_tribe_accuracy.png", res = 300, units = "in", h = 5, w = 8)
 library(ggplot2)
 ggplot(aes(x = proj, y = accuracy, colour = method, group = method), data = res) + geom_point(aes(group = method)) + facet_grid(toothnum~toothchar) + 
   geom_line(aes(group = method)) + xlab("Feature Generation Method") + ylab("Accuracy")
@@ -66,10 +54,9 @@ ggplot(aes(x = proj, y = logloss, colour = method, group = method), data = res) 
 
 
 
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_rf_species.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_radial_species.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_species.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_xg_species.rda")
+load("./full_shape_classification_SRVF/results/results_rf_species.rda")
+load("./full_shape_classification_SRVF/results/results_svm_radial_species.rda")
+load("./full_shape_classification_SRVF/results/results_svm_linear_species.rda")
 
 res <- data.frame()
 for (proj in c("I", "OV", "I-PC", "OV-PC","EFA")) {print(proj)
@@ -100,13 +87,6 @@ for (proj in c("I", "OV", "I-PC", "OV-PC","EFA")) {print(proj)
     res <- rbind(res,data.frame(method = "SVM-R", proj = proj, tooth = tooth, accuracy = acc, logloss = logloss, toothchar = substring(tooth,1,2), toothnum = substring(tooth,3,3), model = "species"))
     
     
-    #XGboost
-    mat <- results_xg_species[[proj]][[tooth]]
-    #Accuracy
-    acc <- mean(mat$pred_class == mat$real_class)
-    #log loss
-    logloss <- mean(-apply(mat, 1, function(x){log(as.numeric(x[x[["real_class"]]]))}))
-    res <- rbind(res,data.frame(method = "XG", proj = proj, tooth = tooth, accuracy = acc, logloss = logloss, toothchar = substring(tooth,1,2), toothnum = substring(tooth,3,3), model = "species"))
     
   }
 }
@@ -115,7 +95,7 @@ for (proj in c("I", "OV", "I-PC", "OV-PC","EFA")) {print(proj)
 res$proj <- factor(res$proj, levels = c("EFA","I","OV","I-PC","OV-PC"))
 res$model <- factor(res$model)
 
-png("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/figures/species_accuracy.png", res = 300, units = "in", h = 5, w = 8)
+png("./full_shape_classification_SRVF/figures/species_accuracy.png", res = 300, units = "in", h = 5, w = 8)
 library(ggplot2)
 ggplot(aes(x = proj, y = accuracy, colour = method, group = method), data = res) + geom_point(aes(group = method)) + facet_grid(toothnum~toothchar) + 
   geom_point(aes(group = method)) + xlab("Feature Generation Method") + ylab("Accuracy")
@@ -130,13 +110,9 @@ ggplot(aes(x = proj, y = logloss, colour = method, group = method, shape = model
 
 
 
-
-
-
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_rf_tribe.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_radial_tribe.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_tribe.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_xg_tribe.rda")
+load("./full_shape_classification_SRVF/results/results_rf_tribe.rda")
+load("./full_shape_classification_SRVF/results/results_svm_radial_tribe.rda")
+load("./full_shape_classification_SRVF/results/results_svm_linear_tribe.rda")
 
 res <- data.frame()
 for (proj in c("I", "OV", "I-PC", "OV-PC","EFA")) {print(proj)
@@ -166,13 +142,6 @@ for (proj in c("I", "OV", "I-PC", "OV-PC","EFA")) {print(proj)
     logloss <- mean(-apply(mat, 1, function(x){log(as.numeric(x[x[["real_class"]]]))}))
     res <- rbind(res,data.frame(method = "SVM-R", proj = proj, tooth = tooth, accuracy = acc, logloss = logloss, toothchar = substring(tooth,1,2), toothnum = substring(tooth,3,3), model = "tribe"))
     
-    #XGboost
-    mat <- results_xg_tribe[[proj]][[tooth]]
-    #Accuracy
-    acc <- mean(mat$pred_class == mat$real_class)
-    #log loss
-    logloss <- mean(-apply(mat, 1, function(x){log(as.numeric(x[x[["real_class"]]]))}))
-    res <- rbind(res,data.frame(method = "XG", proj = proj, tooth = tooth, accuracy = acc, logloss = logloss, toothchar = substring(tooth,1,2), toothnum = substring(tooth,3,3), model = "tribe"))
     
     
   }
@@ -180,10 +149,11 @@ for (proj in c("I", "OV", "I-PC", "OV-PC","EFA")) {print(proj)
 
 
 res$proj <- factor(res$proj, levels = c("EFA","I","OV","I-PC","OV-PC"))
+res <- res %>% filter(method != "XG")
 res$model <- factor(res$model)
 
 
-png("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/figures/tribe_accuracy.png", res = 300, units = "in", h = 5, w = 8)
+png("./full_shape_classification_SRVF/figures/tribe_accuracy.png", res = 300, units = "in", h = 5, w = 8)
 library(ggplot2)
 ggplot(aes(x = proj, y = accuracy, colour = method, group = method), data = res) + geom_point(aes(group = method)) + facet_grid(toothnum~toothchar) + 
   geom_line(aes(group = method))+ xlab("Feature Generation Method") + ylab("Accuracy")
@@ -196,89 +166,6 @@ ggplot(aes(x = proj, y = logloss, colour = method, group = method, shape = model
 
 
 
-#Adding in size
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_rf_tribe_with_size.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_radial_tribe_with_size.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_tribe_with_size.rda")
-#load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_xg_tribe_with_size.rda")
-results_rf_tribe_with_size <- results_rf_tribe
-results_svm_linear_tribe_with_size <- results_svm_linear_tribe
-results_svm_radial_tribe_with_size <- results_svm_radial_tribe
-
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_rf_tribe.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_radial_tribe.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_svm_linear_tribe.rda")
-load("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/results/results_xg_tribe.rda")
-
-res <- data.frame()
-for (proj in c("I", "OV", "I-PC", "OV-PC","EFA")) {print(proj)
-  for (tooth in c("LM1", "LM2", "LM3", "UM1", "UM2", "UM3")) {
-    #Random Forest
-    mat <- results_rf_tribe[[proj]][[tooth]]
-    #Accuracy
-    acc <- mean(mat$pred_class == mat$real_class)
-    #log loss
-    logloss <- mean(-apply(mat, 1, function(x){log(as.numeric(x[x[["real_class"]]]))}))
-    res <- rbind(res,data.frame(method = "RF", proj = proj, tooth = tooth, accuracy = acc, logloss = logloss, toothchar = substring(tooth,1,2), toothnum = substring(tooth,3,3), model = "tribe", size = FALSE))
-    
-    #Random Forest
-    mat <- results_rf_tribe_with_size[[proj]][[tooth]]
-    #Accuracy
-    acc <- mean(mat$pred_class == mat$real_class)
-    #log loss
-    logloss <- mean(-apply(mat, 1, function(x){log(as.numeric(x[x[["real_class"]]]))}))
-    res <- rbind(res,data.frame(method = "RF", proj = proj, tooth = tooth, accuracy = acc, logloss = logloss, toothchar = substring(tooth,1,2), toothnum = substring(tooth,3,3), model = "tribe", size = TRUE))
-    
-    
-    #SVM Linear
-    mat <- results_svm_linear_tribe[[proj]][[tooth]]
-    #Accuracy
-    acc <- mean(mat$pred_class == mat$real_class)
-    #log loss
-    logloss <- mean(-apply(mat, 1, function(x){log(as.numeric(x[x[["real_class"]]]))}))
-    res <- rbind(res,data.frame(method = "SVM-L", proj = proj, tooth = tooth, accuracy = acc, logloss = logloss, toothchar = substring(tooth,1,2), toothnum = substring(tooth,3,3), model = "tribe", size = FALSE))
-    
-    mat <- results_svm_linear_tribe_with_size[[proj]][[tooth]]
-    #Accuracy
-    acc <- mean(mat$pred_class == mat$real_class)
-    #log loss
-    logloss <- mean(-apply(mat, 1, function(x){log(as.numeric(x[x[["real_class"]]]))}))
-    res <- rbind(res,data.frame(method = "SVM-L", proj = proj, tooth = tooth, accuracy = acc, logloss = logloss, toothchar = substring(tooth,1,2), toothnum = substring(tooth,3,3), model = "tribe", size = TRUE))
-    
-    
-    #SVM Radial
-    mat <- results_svm_radial_tribe[[proj]][[tooth]]
-    #Accuracy
-    acc <- mean(mat$pred_class == mat$real_class)
-    #log loss
-    logloss <- mean(-apply(mat, 1, function(x){log(as.numeric(x[x[["real_class"]]]))}))
-    res <- rbind(res,data.frame(method = "SVM-R", proj = proj, tooth = tooth, accuracy = acc, logloss = logloss, toothchar = substring(tooth,1,2), toothnum = substring(tooth,3,3), model = "tribe", size = FALSE))
-    
-    mat <- results_svm_radial_tribe_with_size[[proj]][[tooth]]
-    #Accuracy
-    acc <- mean(mat$pred_class == mat$real_class)
-    #log loss
-    logloss <- mean(-apply(mat, 1, function(x){log(as.numeric(x[x[["real_class"]]]))}))
-    res <- rbind(res,data.frame(method = "SVM-R", proj = proj, tooth = tooth, accuracy = acc, logloss = logloss, toothchar = substring(tooth,1,2), toothnum = substring(tooth,3,3), model = "tribe", size = TRUE))
-    
-    
-  }
-}
-
-
-res$proj <- factor(res$proj, levels = c("EFA","I","OV","I-PC","OV-PC"))
-res$model <- factor(res$model)
-
-library(ggplot2)
-ggplot(aes(x = proj, y = accuracy, colour = method, shape = size), data = res) + geom_point(aes(group = method)) + facet_grid(toothnum~toothchar) + 
-  geom_line(aes(group = method)) + xlab("Feature Generation Method") + ylab("Accuracy")
-
-library(ggplot2)
-ggplot(aes(x = proj, y = logloss, colour = method, group = method, shape = size), data = res) + geom_point(aes(group = method)) + facet_grid(toothnum~toothchar) + 
-  geom_line(aes(group = method))
-
-
-
 #By tribe classification accuracy
 library(tidyverse)
 out <- lapply(results_svm_linear_kernal, function(x){x %>% group_by(real_class) %>% summarise(mn = mean(pred_class == real_class), n = n())})
@@ -286,7 +173,7 @@ out <- lapply(results_svm_linear_kernal, function(x){x %>% group_by(real_class) 
 acc_ind <- do.call(rbind,out)
 acc_ind$toothtype <- rep(names(out), each = 7)
 
-png("/Users/gregorymatthews/Dropbox/full_shape_classification_SRVF/figures/tribe_accuracy_by_tribe.png", res = 300, units = "in", h = 5, w = 8)
+png("./full_shape_classification_SRVF/figures/tribe_accuracy_by_tribe.png", res = 300, units = "in", h = 5, w = 8)
 ggplot(aes(x = toothtype, y = mn, color = real_class, size = n), data = acc_ind) + geom_point()  + geom_line(aes(group = real_class), size = 0.5) + xlab("Tooth Type") + ylab("Accuracy") + scale_color_discrete(name = "True Tribe") + scale_size_continuous(name = "Sample Size")
 dev.off()
 

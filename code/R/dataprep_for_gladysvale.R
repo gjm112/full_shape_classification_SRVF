@@ -4,8 +4,8 @@ library(dplyr)
 library(Momocs)
 library(fdasrvf)
 
-source("/Users/gregorymatthews/Dropbox/gladysvale/R/utility.R")
-source("/Users/gregorymatthews/Dropbox/gladysvale/R/curve_functions.R")
+source("./gladysvale/R/utility.R")
+source("./gladysvale/R/curve_functions.R")
 
 #####################################################################################
 ##What does this code do? 
@@ -26,9 +26,9 @@ source("/Users/gregorymatthews/Dropbox/gladysvale/R/curve_functions.R")
 # q <- "select * from taxonomy where active = 1 and tribe != 'xtribe'"
 # rs <- dbGetQuery(mydb, q)
 # 
-# #save(rs, file = "/Users/gregorymatthews/Dropbox/gladysvale/RData/rs_20210622.RData")
+# #save(rs, file = "./gladysvale/RData/rs_20210622.RData")
 # 
-# load("/Users/gregorymatthews/Dropbox/gladysvale/RData/rs_20210622.RData")
+# load("./gladysvale/RData/rs_20210622.RData")
 
 #Remove Tribe == "xtribe" 
 #These are just example rows in the data base
@@ -42,7 +42,7 @@ source("/Users/gregorymatthews/Dropbox/gladysvale/R/curve_functions.R")
 ################################
 ##Now import the BW images
 ################################
-path <- "/Users/gregorymatthews/Dropbox/gladysvale/Gladysvale_medalcels"
+path <- "./gladysvale/Gladysvale_medalcels"
 
 file_list_BW_extant <- list.files(path, recursive = TRUE, full.names = TRUE)
 
@@ -58,7 +58,7 @@ end <- Sys.time()
 end - start
 
 
-save(teeth_BW_gladysvale, file = "/Users/gregorymatthews/Dropbox/gladysvale/RData/teeth_BW_gladysvale_medalcels.RData")
+save(teeth_BW_gladysvale, file = "./gladysvale/RData/teeth_BW_gladysvale_medalcels.RData")
 
 
 
@@ -77,7 +77,7 @@ teeth_BW_gladysvale_500_matrix <- do.call(rbind,teeth_BW_gladysvale_500)
 row.names(teeth_BW_gladysvale_500_matrix) <- rep(names(teeth_BW_gladysvale_500),each = 2)
 
 #Write out the shape matrix file
-write.csv(teeth_BW_gladysvale_500_matrix,file = "/Users/gregorymatthews/Dropbox/gladysvale/teeth_BW_gladysvale_500_matrix.csv")
+write.csv(teeth_BW_gladysvale_500_matrix,file = "./gladysvale/teeth_BW_gladysvale_500_matrix.csv")
 
 #write out the meta data file
-#write.csv(rs, file = "/Users/gregorymatthews/Dropbox/gladysvale/reference_file_20210622.csv")
+#write.csv(rs, file = "./gladysvale/reference_file_20210622.csv")

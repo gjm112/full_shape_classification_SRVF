@@ -36,6 +36,7 @@ rs <- read.csv("/Users/gregorymatthews/Dropbox/gladysvale/reference_file_2021062
 best <- tune(svm, train.y = y_train$tribe, train.x = X_train ,kernel ="radial", ranges = list(cost=c(0.1,0.5,1,2.5,5,10,100,1000), gamma=c(0.001,0.01,0.1,0.5,1,2.5,5,10,100,1000)), tunecontrol = tune.control(cross = 3))
 a <- svm(y = factor(y_train$tribe), x = X_train, type = "C-classification", kernel = "radial", cost =  best$best.parameters, probability = TRUE)
 
+
 #Predict Tribe Gladysvale
 pred_tribe_gladysvale <- data.frame(ID = gladysvale_reference, 
                                     type = toothtype,
@@ -82,44 +83,45 @@ write.csv(pred_species_gladysvale, paste0("./gladysvale_predictions/",toothtype,
 
 }
 
+#tribe classification
 res <- list()
 for (toothtype in c("LM1","LM2","LM3","UM1","UM2","UM3")){
 res[[toothtype]] <- read.csv(paste0("./gladysvale_predictions/",toothtype,"_tribe_individual.csv"))
 }
 
 res_df <- do.call(rbind,res)
-library(ggplot2)
-ggplot(aes(x = type, y = Alcelaphini), data = res_df) + geom_boxplot()
+write.csv(res_df,file = "./gladysvale_predictions/gladysvale_predictions_tribe_individual_master.csv")
 
-
+#library(ggplot2)
+#ggplot(aes(x = type, y = Alcelaphini), data = res_df) + geom_boxplot()
 table(res_df$type,res_df$pred_class)
-table(res_df$pred_class == "Alcelaphini")
-mean(res_df$pred_class == "Alcelaphini")
-
-mean(res_df$Alcelaphini[res_df$pred_class == "Alcelaphini"])
-
+# table(res_df$pred_class == "Alcelaphini")
+# mean(res_df$pred_class == "Alcelaphini")
+#mean(res_df$Alcelaphini[res_df$pred_class == "Alcelaphini"])
 
 
-res <- list()
+#Species classification
+res_spec <- list()
 for (toothtype in c("LM1","LM2","LM3","UM1","UM2","UM3")){
-  res[[toothtype]] <- read.csv(paste0("./gladysvale_predictions/",toothtype,"_tribe_overall.csv"))
+  res_spec[[toothtype]] <- read.csv(paste0("./gladysvale_predictions/",toothtype,"_species_individual.csv"))
 }
+res_df_spec <- do.call(rbind,res_spec)
+write.csv(res_df_spec,file = "./gladysvale_predictions/gladysvale_predictions_species_individual_master.csv")
 
-res_df <- do.call(rbind,res)
-table(res_df$pred_class == "Alcelaphini")
-mean(res_df$pred_class == "Alcelaphini")
-table(res_df$type,res_df$pred_class)
+# table(res_df_spec$type,res_df_spec$pred_class)
+# table(res_df_spec$pred_class)
 
-res <- list()
-for (toothtype in c("LM1","LM2","LM3","UM1","UM2","UM3")){
-  res[[toothtype]] <- read.csv(paste0("./gladysvale_predictions/",toothtype,"_species_individual.csv"))
-}
-res_df_spec <- do.call(rbind,res)
-table(res_df$pred_class) 
-mean(res_df$pred_class == "Alcelaphini")
-table(res_df$type,res_df$pred_class)
 
-buselaphus, dorcas, gnou, taurinus
-5, 6, 3, 1
-
-cbind(res_df$pred_class,res_df_spec$pred_class)
+# res <- list()
+# for (toothtype in c("LM1","LM2","LM3","UM1","UM2","UM3")){
+#   res[[toothtype]] <- read.csv(paste0("./gladysvale_predictions/",toothtype,"_species_individual.csv"))
+# }
+# res_df_spec <- do.call(rbind,res)
+# table(res_df_spec$pred_class) 
+# mean(res_df$pred_class == "Alcelaphini")
+# table(res_df$type,res_df$pred_class)
+# 
+# buselaphus, dorcas, gnou, taurinus
+# 5, 6, 3, 1
+# 
+# cbind(res_df$pred_class,res_df_spec$pred_class)
